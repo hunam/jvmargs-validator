@@ -77,3 +77,15 @@ class ArgsValidator(var javaPath: String = "java", var cmdLine: String = "") {
     ParamsParser.parse(flagsFinal).filter(_._2.assigned)
   }
 }
+
+object ArgsValidator {
+  def validate(javaPath: String = "java", cmdLine: String = "") =
+    new ArgsValidator(javaPath, cmdLine).validate()
+
+  private[jvmargs] def validateStateless(params: Map[String, Param[Any]],
+                                javaPath: String = "java", cmdLine: String = "") =
+    new ArgsValidator(javaPath, cmdLine).validate(params)
+
+  def params(javaPath: String = "java", cmdLine: String = "") =
+    new ArgsValidator(javaPath, cmdLine).params()
+}

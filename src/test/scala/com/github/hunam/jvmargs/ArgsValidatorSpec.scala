@@ -18,23 +18,16 @@ class ArgsValidatorSpec extends FlatSpec with ShouldMatchers {
 
   val unlocks = "-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions"
 
-  val params = {
-    val validator = new ArgsValidator()
-    validator.cmdLine = unlocks
-    validator.params()
-  }
+  val params = ArgsValidator.params("java", unlocks)
 
   "Validator" should "be able to validate all parameters with default values" in {
-    val validator = new ArgsValidator()
-    validator.cmdLine = unlocks
     val failures = params map {
       case (name, param) => (name, param.toString)
     } map {
       case (name, cmdLine) =>
-        validator.cmdLine = s"$unlocks $cmdLine"
-        // using private 'validate(params)' to prevent
+        // using private 'validate(params, ...)' to prevent
         // launching JVM hundreds of times
-        cmdLine -> validator.validate(params)
+        cmdLine -> ArgsValidator.validateStateless(params, "java", s"$unlocks $cmdLine")
     } flatMap {
       case (cmdLine, validations) if validations.length != 3 =>
         Some(s"$cmdLine has multiple validations: ${validations drop 2}")
@@ -50,18 +43,14 @@ class ArgsValidatorSpec extends FlatSpec with ShouldMatchers {
   }
 
   def valid(arg: String) = it should s"validate $arg" in {
-    val validator = new ArgsValidator()
-    validator.cmdLine = arg
-    val validations = validator.validate(params)
+    val validations = ArgsValidator.validateStateless(params, "java", arg)
     val failures = validations.filterNot(_.successful)
     println(failures)
     assert(failures.isEmpty)
   }
 
   def invalid(arg: String) = it should s"fail to validate $arg" in {
-    val validator = new ArgsValidator()
-    validator.cmdLine = arg
-    val validations = validator.validate(params)
+    val validations = ArgsValidator.validateStateless(params, "java", arg)
     val failures = validations.filterNot(_.successful)
     failures foreach println
     assert(failures.nonEmpty)
@@ -93,7 +82,4 @@ class ArgsValidatorSpec extends FlatSpec with ShouldMatchers {
   valid("-Dfoo.bar")
   valid("-Dfoo")
   valid("-D") // <-- turns out this is legal
-
-
-
 }
