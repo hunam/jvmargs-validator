@@ -30,7 +30,8 @@ Source usage:
 ```scala
 import com.github.hunam.jvmargs.ArgsValidator
 
-val validations = ArgsValidator("java", "-XX:+UseCompressedOops -Xmx100m -Dfoo.bar -XX:YakShaving=1000 -XX:MaxHeapSize=infinite")
+val validations = ArgsValidator.validate("java",
+  "-XX:+UseCompressedOops -Xmx100m -Dfoo.bar -XX:YakShaving=1000 -XX:MaxHeapSize=infinite")
 val failures = validations filter (!_.successful)
 failures foreach println
 ```
