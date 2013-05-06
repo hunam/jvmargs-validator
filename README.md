@@ -13,7 +13,7 @@ Usage:
 
 Clone the library, then build and publish it locally:
 
-``` bash
+```bash
 git clone https://github.com/hunam/jvmargs-validator.git
 cd jvmargs-validator
 sbt publish-local
@@ -21,13 +21,13 @@ sbt publish-local
 
 In your own build.sbt:
 
-``` scala build.sbt
+```scala
 libraryDependencies += "com.github.hunam"
 ```
 
 Source usage:
 
-``` scala
+```scala
 import com.github.hunam.jvmargs.ArgsValidator
 
 val validations = ArgsValidator("java", "-XX:+UseCompressedOops -Xmx100m -Dfoo.bar -XX:YakShaving=1000 -XX:MaxHeapSize=infinite")
